@@ -3,32 +3,68 @@ module ModelMaker
     def parse_model(obj, &blk)
       case obj
       when Hash
-        handle_hash(obj, &blk)
-      when Array
-        handle_list(obj, &blk)
+        handle_model(obj, &blk)
       else
-        handle_single(obj, &blk)
-      end
-      
+        raise "Models must be modeled as a YAML hash"
+      end      
     end
     
   protected
-    def handle_hash(obj, &blk)
+    def handle_model(obj, &blk)
       # Forget keys because I don't know what to do with them
       obj.each do |key, value|
+        case 
+        when Array
+          handle_model_items(obj, &blk)
+        else
+          raise "Model data be modeled as a list"        
       end
     end
 
-    def handle_list(obj, &blk)
-      obj.each do |value| 
+    def handle_hash(obj, &blk)
+      # Forget keys because I don't know what to do with them
+      obj.each do |key, value|
+        parse_value(key, value)
+      end
+    end
 
+    def handle_model_items(obj, &blk)
+      obj.each do |value| 
+        case obj
+        when Hash
+          handle_hash(obj, &blk)
+        else
+          handle_single(obj, &blk)          
+        end        
       end
     end
 
     def handle_single(obj, &blk)
-      if obj
-      end
+      parse_value(obj)
     end    
+
+    def parse_value(key, value = nil)
+      parse_meta(key, value) if key = key.gsub(/^_/, '')
+      attribute(key, value)
+    end 
+
+    def parse_meta(key, value = nil)
+      Meta.new key, value
+    end
+
+    def attribute(key, value)
+      Attribute.new key, type(value), options(value)
+    end                       
+    
+    def type(type)
+      type = type.gsub(/\(.*$/, '') ? type : string
+    end
+
+    def options(opt)  
+      opt = opt[/\((.*)\)/, 1]
+      options = opt.split(':')
+      options.inject({}){|res, opt| res[opt.to_sym => true]}      
+    end
     
   end
 end
