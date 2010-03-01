@@ -1,0 +1,4 @@
+== Rails 3 model maker
+
+Generate all your models from a single YAML file. Should make it more feasible to migrate a model between different persistence systems.
+This first iteration is to support model generation for Active Record, Mongo Mapper and Mongoid.

@@ -1,0 +1,39 @@
+----
+# To make it possible to switch Model between persistence solutions, fx from Active Record to Mongoid and back        
+MODEL:
+  Person: &Person
+    _inherits: Being # polymorphic or mongoid
+    name: string(index:required) # index
+    age: integer(numeric) # short = num
+    _associations:
+       one_belonging: *User
+       many_belonging: *Post        
+
+  Address: &Address
+    - _embedded # mongo mapper
+    - address
+    - city
+    - state
+    - zip
+    
+  User: &User
+    username: string(index:required) 
+    password: string 
+  
+  Post: &Post
+    title: string(index:required)
+    text: text    
+    _associations:    
+      many_belonging: *Comment             
+  
+  Comment: &Comment
+    title: string(i:r) # index
+    text: text
+
+  Statistic:    
+    _namespace: Admin ´# in model/admin folder
+    type:
+    views:    
+    
+
+    
