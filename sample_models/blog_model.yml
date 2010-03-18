@@ -6,7 +6,7 @@ MODEL:
     name: string(index:required) # index
     age: integer(numeric) # short = num
     _associations:
-       one_belonging: *User
+       one: *User
        many_belonging: *Post        
 
   Address: &Address

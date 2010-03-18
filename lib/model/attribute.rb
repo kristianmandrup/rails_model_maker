@@ -1,14 +1,21 @@
 module ModelMaker
   class Model
     class Attribute
-      attr_accessor :name, :type, :index, :required 
+      attr_accessor :name, :type, :options 
     
       def initialize(name, type, options = {})
         @name = name
-        @type = type
+        @type = type  
+        self.options = {}
         options.each do |key, value|
-          self.send(key, value) if self.respond_to? key
+          self.options[key] = value
         end          
+      end
+
+      def to_s
+        s = " - #{name}, Type: #{type} " 
+        s += options.inspect if !self.options.empty?        
+        s + "\n"
       end
     
     end

@@ -11,12 +11,14 @@ module ModelMaker
       yml = YAML.load_file(filename)
       yml.each do |key, value|
         # run appropriate generators for parsed model
-        run_generators model if model = get_model(key, value)             
+        model = get_model(key, value)             
+        puts "#{model}"
+        # run_generators(model)
       end      
     end
 
     def get_model(key, value)
-      parser.parse value if key == 'MODEL'      
+      parser.parse_model(value) if key == 'MODEL'      
     end
   end
 end
